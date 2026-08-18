@@ -4,6 +4,7 @@ export type IntroSlide = {
   accent: string;
   text: string;
   bubble: string;
+  demoScenarioId?: string;
 };
 
 export const introSlides: IntroSlide[] = [
@@ -27,5 +28,6 @@ export const introSlides: IntroSlide[] = [
     accent: "",
     text: "Vamos explorar juntos como posso ajudar você a aproveitar ao máximo sua estadia.",
     bubble: "Preparei uma reserva de exemplo para você.",
+    demoScenarioId: "1001",
   },
 ];

@@ -3,6 +3,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { introSlides } from "../../data/introSlides";
 import { IntroCard } from "./IntroCard";
 import { IntroScene } from "./IntroScene";
+import {
+  DEFAULT_DEMO_SCENARIO_ID,
+  DEFAULT_STREAMLIT_URL,
+} from "./demo";
 import "./intro.css";
 
 import background from "../../../artifacts/2_Background.png";
@@ -12,6 +16,9 @@ export function Intro() {
 
   const slide = introSlides[slideIndex];
   const isLastSlide = slideIndex === introSlides.length - 1;
+  const streamlitUrl = import.meta.env.VITE_STREAMLIT_URL ?? DEFAULT_STREAMLIT_URL;
+  const fallbackScenarioId = import.meta.env.VITE_DEMO_SCENARIO_ID ?? DEFAULT_DEMO_SCENARIO_ID;
+  const demoScenarioId = slide.demoScenarioId ?? fallbackScenarioId;
 
   const goNext = () => {
     setSlideIndex((current) =>
@@ -21,6 +28,12 @@ export function Intro() {
 
   const skipIntro = () => {
     setSlideIndex(introSlides.length - 1);
+  };
+
+  const startDemo = () => {
+    const targetUrl = new URL(streamlitUrl);
+    targetUrl.searchParams.set("scenario", demoScenarioId);
+    window.location.assign(targetUrl.toString());
   };
 
   return (
@@ -49,6 +62,7 @@ export function Intro() {
                 isLastSlide={isLastSlide}
                 onNext={goNext}
                 onSkip={skipIntro}
+                onStartDemo={startDemo}
               />
             </motion.div>
           </AnimatePresence>

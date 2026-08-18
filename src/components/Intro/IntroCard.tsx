@@ -9,6 +9,7 @@ type IntroCardProps = {
   isLastSlide: boolean;
   onNext: () => void;
   onSkip: () => void;
+  onStartDemo: () => void;
 };
 
 function ArrowRightIcon() {
@@ -51,6 +52,7 @@ export function IntroCard({
   isLastSlide,
   onNext,
   onSkip,
+  onStartDemo,
 }: IntroCardProps) {
   return (
     <article className="introCard">
@@ -106,9 +108,9 @@ export function IntroCard({
       <button
         className="introCard__next"
         type="button"
-        onClick={isLastSlide ? onSkip : onNext}
+        onClick={isLastSlide ? onStartDemo : onNext}
       >
-        <span>{isLastSlide ? "Começar" : "Próximo"}</span>
+        <span>{isLastSlide ? "Iniciar demo" : "Próximo"}</span>
         <ArrowRightIcon />
       </button>
 
