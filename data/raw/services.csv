@@ -1,0 +1,4 @@
+service_id,name,description,included
+1,Cafe da manha,Buffet servido no restaurante principal,true
+2,Piscina,Area externa com espreguicadeiras,true
+3,Frigobar,Bebidas e snacks no quarto,true

@@ -1,0 +1,4 @@
+room_id,type,floor,minibar,breakfast,capacity
+304,Deluxe,3,true,true,2
+112,Standard,1,false,false,2
+408,Ocean,4,true,true,3
