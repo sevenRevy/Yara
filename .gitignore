@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.vite/
+.serena/
+test-results/
+test-results/.last-run.json
+playwright-report/
+playwright.config.ts
+.env
+.env.*
+!.env.example
+!.env.template
+*.local
+*.log
+*.tsbuildinfo
+coverage/

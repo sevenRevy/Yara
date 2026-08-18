@@ -1,0 +1,590 @@
+.intro {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background-color: var(--cream);
+}
+
+.intro::after {
+  content: none;
+}
+
+.intro__background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+
+.intro__stage {
+  position: relative;
+  z-index: 1;
+  width: min(100vw, calc(100svh * 1672 / 853));
+  height: min(100svh, calc(100vw * 853 / 1672));
+  overflow: visible;
+  container-type: inline-size;
+}
+
+.intro__header {
+  position: absolute;
+  top: 2.1cqw;
+  left: 2.8cqw;
+  z-index: 10;
+}
+
+.intro__brand {
+  display: grid;
+  gap: 2px;
+  justify-items: center;
+}
+
+.intro__brand span {
+  color: #2f9c9a;
+  font-size: 0.48cqw;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.intro__scene {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+}
+
+.intro__character {
+  position: absolute;
+  top: 7.35cqw;
+  left: 6.9cqw;
+  z-index: 3;
+  width: 39cqw;
+  height: auto;
+  transform-origin: bottom center;
+}
+
+.intro__character > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 18px 22px rgba(63, 47, 31, 0.09));
+}
+
+.speechBubble {
+  position: absolute;
+  top: 4.35cqw;
+  left: 57.6%;
+  container-type: inline-size;
+  width: 16.9cqw;
+  height: auto;
+  aspect-ratio: 328 / 201;
+  min-height: 0;
+  color: var(--ink);
+  font-weight: 500;
+  text-align: center;
+  transform-origin: bottom left;
+}
+
+.speechBubble__sticker {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+.speechBubble__text {
+  position: absolute;
+  top: 29%;
+  right: 10%;
+  bottom: 24%;
+  left: 16%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  font-size: 7cqw;
+  line-height: 1.18;
+  overflow-wrap: normal;
+  text-wrap: balance;
+}
+
+.speechBubble__line {
+  display: block;
+  max-width: 100%;
+  white-space: pre-line;
+}
+
+.speechBubble strong {
+  color: var(--coral);
+  font-weight: 800;
+}
+
+.intro__cardLayer {
+  position: absolute;
+  top: 4.1cqw;
+  right: 3.05cqw;
+  z-index: 6;
+  width: 46.8cqw;
+}
+
+.introCard {
+  position: relative;
+  overflow: visible;
+  width: 100%;
+  height: 42.5cqw;
+  min-height: 0;
+  max-height: none;
+  padding: 4.45cqw 5cqw 2.42cqw;
+  border: 1px solid rgba(95, 75, 55, 0.08);
+  border-radius: 2.12cqw;
+  text-align: center;
+  background:
+    radial-gradient(circle at 76% 19%, rgba(115, 207, 200, 0.05), transparent 23%),
+    linear-gradient(rgba(255, 252, 246, 0.91), rgba(255, 250, 244, 0.91));
+  box-shadow: 0 24px 48px rgba(75, 63, 43, 0.16);
+  backdrop-filter: blur(5px);
+}
+
+.introCard__art {
+  position: absolute;
+  z-index: 0;
+  display: block;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.introCard__art--up {
+  top: -2.7cqw;
+  right: -3.2cqw;
+  width: 37.5cqw;
+}
+
+.introCard__symbol,
+.introCard h1,
+.introCard__wave,
+.introCard p,
+.introCard__next,
+.introCard__skip,
+.introCard__dots {
+  position: relative;
+  z-index: 1;
+}
+
+.introCard__symbol {
+  display: grid;
+  width: 5.4cqw;
+  height: 4.38cqw;
+  margin: 0 auto 0.52cqw;
+  place-items: center;
+  line-height: 1;
+}
+
+.introCard__symbol img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.introCard h1 {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  color: var(--teal);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 4.68cqw;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 0.96;
+}
+
+.introCard__accentLine {
+  color: var(--teal);
+}
+
+.introCard__accentBrand {
+  color: var(--coral);
+}
+
+.introCard__wave {
+  width: fit-content;
+  min-height: 1.05cqw;
+  margin: 0.58cqw auto 0.54cqw;
+  color: var(--aqua);
+  font-size: 1.03cqw;
+  font-weight: 800;
+}
+
+.introCard__wave::before {
+  content: "~~~~~~~~~~~~~~";
+  letter-spacing: 0.21cqw;
+}
+
+.introCard p {
+  max-width: 41ch;
+  min-height: 2.35cqw;
+  margin: 0 auto 1.05cqw;
+  color: var(--muted);
+  font-size: 1.01cqw;
+  line-height: 1.38;
+}
+
+.introCard__reservation {
+  width: min(100%, 30.8cqw);
+  margin: 0 auto 1.05cqw;
+  overflow: hidden;
+  border: 1px solid rgba(34, 96, 93, 0.12);
+  border-radius: 1.2cqw;
+  background:
+    linear-gradient(180deg, rgba(250, 255, 249, 0.98), rgba(244, 248, 240, 0.98));
+  box-shadow: 0 10px 24px rgba(88, 74, 53, 0.08);
+  text-align: left;
+}
+
+.introCard__reservationRows {
+  display: grid;
+}
+
+.introCard__reservationRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1cqw;
+  padding: 0.55cqw 1.1cqw;
+  border-bottom: 1px solid rgba(95, 75, 55, 0.08);
+  color: var(--ink);
+  font-size: 0.92cqw;
+  line-height: 1.2;
+}
+
+.introCard__reservationRow:last-child {
+  border-bottom: 0;
+}
+
+.introCard__reservationRow span {
+  color: var(--muted);
+}
+
+.introCard__reservationRow strong {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.introCard__reservationFooter {
+  display: grid;
+  align-items: center;
+  padding: 0.62cqw 1.1cqw;
+  background: rgba(224, 236, 207, 0.88);
+  color: #1f5f3a;
+  font-size: 0.94cqw;
+  font-weight: 700;
+  text-align: center;
+}
+
+.introCard__next {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 23.4cqw;
+  height: 3.82cqw;
+  margin: 0 auto;
+  padding: 0 68px;
+  border: 0;
+  border-radius: 999px;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(180deg, #fa7c67, #f46859);
+  box-shadow:
+    inset 0 2px 1px rgba(255, 255, 255, 0.28),
+    0 7px 13px rgba(219, 83, 66, 0.24);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.introCard__next:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 2px 1px rgba(255, 255, 255, 0.28),
+    0 10px 20px rgba(219, 83, 66, 0.27);
+}
+
+.introCard__next:focus-visible,
+.introCard__skip:focus-visible {
+  outline: 3px solid rgba(18, 107, 112, 0.32);
+  outline-offset: 4px;
+}
+
+.introCard__next span {
+  font-size: 1.34cqw;
+  font-weight: 750;
+}
+
+.introCard__next svg {
+  position: absolute;
+  right: 2cqw;
+  width: 1.9cqw;
+  height: 1.9cqw;
+}
+
+.introCard__skip {
+  margin-top: 1.05cqw;
+  border: 0;
+  color: var(--teal);
+  cursor: pointer;
+  background: transparent;
+  font-size: 1.02cqw;
+  font-weight: 650;
+}
+
+.introCard__dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.9cqw;
+  margin-top: 1.22cqw;
+}
+
+.introCard__dots span {
+  width: 1.12cqw;
+  height: 1.12cqw;
+  border-radius: 50%;
+  background: #eadfce;
+}
+
+.introCard__dots span.active {
+  background: var(--coral);
+}
+
+@media (max-width: 1080px) {
+  .intro__stage {
+    width: 100vw;
+    height: 100svh;
+  }
+
+  .intro__character {
+    top: auto;
+    bottom: clamp(-210px, -17vw, -150px);
+    left: clamp(12px, 5vw, 54px);
+    width: clamp(430px, 47vw, 570px);
+    height: auto;
+  }
+
+  .speechBubble {
+    display: none;
+  }
+
+  .intro__cardLayer {
+    right: 24px;
+    width: clamp(520px, 58vw, 640px);
+  }
+
+  .introCard {
+    height: min(82svh, 680px);
+    min-height: 580px;
+    padding: clamp(3.25rem, 5.5svh, 4rem) clamp(2.5rem, 4.75vw, 3.5rem) clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .introCard h1 {
+    font-size: clamp(3.5rem, 5.8vw, 4.5rem);
+  }
+
+  .introCard__reservation {
+    width: min(100%, 360px);
+    margin-bottom: 16px;
+    border-radius: 18px;
+  }
+
+  .introCard__reservationRow {
+    padding: 10px 14px;
+    font-size: 0.88rem;
+  }
+
+  .introCard__reservationFooter {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 850px) {
+  .intro {
+    min-height: 100svh;
+    background-position: center top;
+  }
+
+  .intro__stage {
+    width: 100vw;
+    height: 100svh;
+  }
+
+  .intro__header {
+    top: 24px;
+    left: 20px;
+  }
+
+  .intro__brand span {
+    font-size: 0.54rem;
+  }
+
+  .intro__scene {
+    width: 100%;
+    height: 100svh;
+  }
+
+  .intro__character {
+    bottom: 39%;
+    left: -12%;
+    width: min(54vw, 270px);
+    height: auto;
+  }
+
+  .speechBubble {
+    display: none;
+  }
+
+  .intro__cardLayer {
+    top: auto;
+    right: 16px;
+    bottom: 42px;
+    left: 16px;
+    width: auto;
+    transform: none;
+  }
+
+  .introCard {
+    min-height: auto;
+    height: auto;
+    max-height: calc(100svh - 88px);
+    padding: 2.125rem 1.5625rem 1.5rem;
+    border-radius: 30px;
+  }
+
+  .introCard__art--up {
+    top: -36px;
+    right: -30px;
+    width: min(26rem, 92vw);
+  }
+
+  .introCard__symbol {
+    width: 64px;
+    height: 54px;
+    margin-bottom: 8px;
+  }
+
+  .introCard h1 {
+    font-size: 3rem;
+  }
+
+  .introCard__wave {
+    margin: 15px auto;
+  }
+
+  .introCard p {
+    max-width: 30ch;
+    min-height: 68px;
+    margin-bottom: 20px;
+    font-size: 0.98rem;
+  }
+
+  .introCard__reservation {
+    width: 100%;
+    margin-bottom: 18px;
+    border-radius: 18px;
+  }
+
+  .introCard__reservationRow {
+    padding: 9px 12px;
+    font-size: 0.84rem;
+  }
+
+  .introCard__reservationFooter {
+    padding: 9px 12px;
+    font-size: 0.86rem;
+  }
+
+  .introCard__next {
+    width: min(100%, 320px);
+    height: 58px;
+    padding: 0 56px;
+  }
+
+  .introCard__next span {
+    font-size: 1.28rem;
+  }
+
+  .introCard__next svg {
+    right: 22px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .introCard__skip {
+    font-size: 1.12rem;
+  }
+
+  .introCard__dots {
+    gap: 14px;
+    margin-top: 22px;
+  }
+
+  .introCard__dots span {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 430px) {
+  .intro__character {
+    bottom: 34%;
+    left: -5%;
+    width: 62vw;
+  }
+
+  .introCard {
+    padding: 27px 20px 20px;
+  }
+
+  .introCard h1 {
+    font-size: 2.35rem;
+  }
+
+  .introCard p {
+    max-width: 29ch;
+    min-height: 82px;
+    font-size: 0.92rem;
+  }
+
+  .introCard__reservationRow {
+    padding: 8px 11px;
+    font-size: 0.8rem;
+  }
+
+  .introCard__reservationFooter {
+    font-size: 0.82rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
