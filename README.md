@@ -1,132 +1,94 @@
 # YARA
 
-YARA é um assistente virtual de hotel pensado para começar já com uma demonstração útil: o usuário entra, vê a apresentação da assistente, recebe uma reserva de exemplo e passa direto para o chat com contexto carregado.
-
-## Visão geral
-
-O fluxo principal é este:
+YARA e um assistente virtual de hotel. O repositório ja tem o frontend React/Vite e agora ganhou a primeira camada funcional do MVP:
 
 ```text
-Entrada
+React intro
   ↓
-Apresentação da YARA
+Streamlit demo
   ↓
-Reserva demonstrativa aleatória
-  ↓
-Contexto da estadia carregado
-  ↓
-Chat
+SQLite com reservas, quartos e servicos
 ```
 
-Exemplo de contexto inicial:
+O foco desta etapa e validar o fluxo de entrada antes do RAG:
 
 ```text
-Hóspede: Lucas Mendes
-Quarto: 304
-Tipo: Deluxe
-Período: 18–21 agosto
-Café da manhã: incluído
+Usuario
+  ↓
+Apresentacao da YARA
+  ↓
+Iniciar demo
+  ↓
+Streamlit
+  ↓
+scenario=1001
+  ↓
+SQLite
+  ↓
+Chat estruturado
 ```
 
-A ideia é que o usuário possa perguntar imediatamente coisas como:
+## O que ja esta pronto
 
-- Que horas é o café da manhã?
-- Onde fica a piscina?
-- Meu quarto tem frigobar?
-- Posso fazer checkout mais tarde?
+- Frontend de apresentacao em `src/components/Intro`
+- CTA final que abre a demo do Streamlit
+- CSV de exemplo em `data/raw`
+- Bootstrap do SQLite em `backend/data_processing/store.py`
+- Demo Streamlit em `backend/api/app.py`
 
-## Dois tipos de conhecimento
+## Como rodar a etapa atual
 
-A aplicação trata **CSV** e **PDF** como fontes diferentes de conhecimento.
+1. Instale as dependencias de frontend:
 
-### CSV: conhecimento estruturado
+```bash
+npm install
+```
 
-O CSV alimenta dados operacionais do hotel:
+2. Instale a dependencia Python do demo:
 
-- quartos
-- reservas
-- serviços
-- horários
-- atributos fixos da hospedagem
+```bash
+py -3 -m pip install -r requirements.txt
+```
 
-Esses dados devem ser consultados de forma estruturada, normalmente via SQL, e não como embeddings.
+3. Gere o banco SQLite de exemplo:
 
-Exemplos de perguntas que podem ir direto para consulta estruturada:
+```bash
+py -3 backend/scripts/bootstrap_demo.py
+```
 
-- Qual é o quarto do Lucas Mendes?
-- Meu quarto tem frigobar?
-- Qual é a data de checkout da reserva atual?
+4. Rode o frontend:
 
-### PDF: conhecimento textual
+```bash
+npm run dev
+```
 
-O PDF alimenta o material textual usado pelo RAG:
+5. Rode a demo Streamlit:
 
-- políticas
-- manuais
-- regras
-- descrições do hotel
-- orientações para o hóspede
+```bash
+streamlit run backend/api/app.py
+```
 
-Esse conteúdo passa por extração, limpeza, divisão em chunks, embeddings e busca semântica.
+## Dados estruturados
 
-Exemplos:
+Os CSVs representam a base operacional do hotel:
 
-- Posso fazer checkout mais tarde?
-- Qual é a política de café da manhã?
-- Como funciona o late checkout?
+- `rooms.csv`
+- `reservations.csv`
+- `services.csv`
 
-## Fluxo de resposta
+Esses dados entram no SQLite e permitem responder perguntas como:
 
-Na prática, a resposta da YARA combina:
+- Qual e o quarto da reserva atual?
+- O cafe da manha esta incluido?
+- O quarto tem frigobar?
+- Quais servicos estao cadastrados?
+
+## Proxima fase
+
+Depois desta base, o proximo passo natural e adicionar:
 
 ```text
-Reserva atual
-+ dados estruturados do hotel
-+ RAG dos documentos
-+ LLM
+PDF -> Markdown -> chunking -> embeddings -> retrieval -> prompt
 ```
 
-Um roteamento simples já resolve o MVP:
-
-```text
-Pergunta do usuário
-  ↓
-Identificação do tipo de consulta
-  ↓
-Consulta estruturada, RAG, ou ambos
-  ↓
-Montagem do contexto
-  ↓
-LLM
-  ↓
-Resposta da YARA
-```
-
-Para perguntas claramente ligadas à reserva atual, a consulta estruturada deve vir primeiro. Para perguntas sobre políticas, regras e informações textuais, o RAG deve ser a fonte principal. Em casos mistos, a resposta pode combinar as duas fontes.
-
-## Arquitetura lógica
-
-```text
-                          FRONTEND
-                            ↓
-                          BACKEND API
-                            ↓
-┌──────────────┬──────────────────┬─────────────────┐
-│              │                  │                 │
-▼              ▼                  ▼                 ▼
-CSV        Banco local        PDFs             Sessão atual
-dados       estruturados       de hotel        da hospedagem
-```
-
-O núcleo do pipeline de documentos é:
-
-```text
-parsing → limpeza → chunking → embeddings → indexação → busca → seleção de contexto → prompt → LLM
-```
-
-O núcleo dos dados estruturados é:
-
-```text
-CSV → validação/normalização → armazenamento estruturado → consulta SQL
-```
-
+Nessa etapa o Streamlit continua responsavel pela interface e pela sessao, enquanto a camada textual do hotel entra como contexto complementar.

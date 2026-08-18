@@ -13,4 +13,7 @@ playwright.config.ts
 *.local
 *.log
 *.tsbuildinfo
+__pycache__/
+*.pyc
 coverage/
+data/processed/yara.db
