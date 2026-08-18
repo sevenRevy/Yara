@@ -6,9 +6,25 @@ type IntroSceneProps = {
   bubble: string;
 };
 
-export function IntroScene({ bubble }: IntroSceneProps) {
-  const [beforeYara, afterYara] = bubble.split("YARA");
+const BRAND = "YARA";
 
+function renderBubbleText(bubble: string) {
+  if (!bubble.includes(BRAND)) {
+    return bubble;
+  }
+
+  const [beforeBrand, afterBrand] = bubble.split(BRAND);
+
+  return (
+    <>
+      {beforeBrand}
+      <strong>{BRAND}</strong>
+      {afterBrand}
+    </>
+  );
+}
+
+export function IntroScene({ bubble }: IntroSceneProps) {
   return (
     <section className="intro__scene" aria-label="Cena de apresentação da YARA">
       <motion.div
@@ -37,11 +53,7 @@ export function IntroScene({ bubble }: IntroSceneProps) {
             aria-hidden="true"
           />
           <span className="speechBubble__text">
-            <span className="speechBubble__line">
-              {beforeYara}
-              <strong>YARA</strong>
-              {afterYara}
-            </span>
+            <span className="speechBubble__line">{renderBubbleText(bubble)}</span>
           </span>
         </motion.div>
       </motion.div>

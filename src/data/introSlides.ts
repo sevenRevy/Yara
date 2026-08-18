@@ -27,7 +27,7 @@ export const introSlides: IntroSlide[] = [
     title: "Veja na prática",
     accent: "",
     text: "Vamos explorar juntos como posso ajudar você a aproveitar ao máximo sua estadia.",
-    bubble: "Preparei uma reserva de exemplo para você.",
+    bubble: "Aqui, uma reserva\nde exemplo para você.",
     demoScenarioId: "1001",
   },
 ];
