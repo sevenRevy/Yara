@@ -1,0 +1,25 @@
+{
+  "embedding_model": "openai/text-embedding-3-small",
+  "llm_model": "openai/gpt-4o-mini",
+  "documents": 3,
+  "chunks": 3,
+  "dimensions": 1536,
+  "built_at": "2026-08-18T16:54:23.544979+00:00",
+  "sources": [
+    {
+      "path": "data/raw/hotel_guide.pdf",
+      "mtime": 1787072029.4263098,
+      "size": 756
+    },
+    {
+      "path": "data/raw/policies.pdf",
+      "mtime": 1787072029.4273074,
+      "size": 747
+    },
+    {
+      "path": "data/raw/services.pdf",
+      "mtime": 1787072029.428307,
+      "size": 781
+    }
+  ]
+}

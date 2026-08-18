@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-CSV_DIR = REPO_ROOT / "data" / "raw"
+CSV_DIR = REPO_ROOT / "data" / "csv"
 DB_PATH = REPO_ROOT / "data" / "processed" / "yara.db"
 
 TABLES: dict[str, dict[str, Any]] = {

@@ -14,12 +14,11 @@ import streamlit as st
 
 from backend.api.chat import render_chat
 from backend.api.session import ensure_session_state, get_scenario_id
-from backend.data_processing.store import (
-    bootstrap_database,
-    connect,
-    load_reservation_bundle,
+from backend.data_processing.csv_loader import (
+    get_reservation,
     load_services,
 )
+from backend.data_processing.hotel_rag import load_hotel_rag
 
 ARTIFACTS = ROOT / "artifacts"
 MONTHS_PT = ("jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez")
@@ -116,7 +115,7 @@ ALL_CATEGORIES = [
 ]
 
 CATEGORY_COLUMNS = 4
-CHAT_HEIGHT_PX = 540
+CHAT_HEIGHT_PX = 580
 
 
 @st.cache_data(show_spinner=False)
@@ -135,6 +134,20 @@ def _bundle_value(bundle, key: str, default=None):
     except (KeyError, IndexError, TypeError):
         return default
     return value if value is not None else default
+
+
+@st.cache_resource(show_spinner=False)
+def _load_rag(_cache_key: tuple[int, int]):
+    return load_hotel_rag()
+
+
+def _rag_cache_key() -> tuple[int, int]:
+    raw_dir = ROOT / "data" / "raw"
+    pdf_paths = sorted(raw_dir.glob("*.pdf"))
+    if not pdf_paths:
+        return (0, 0)
+    latest_mtime = max(int(path.stat().st_mtime_ns) for path in pdf_paths)
+    return (len(pdf_paths), latest_mtime)
 
 
 def _pretty_date_range(check_in: str, check_out: str) -> str:
@@ -201,7 +214,7 @@ def _build_css() -> str:
 
 .block-container {
   max-width: 1400px;
-  padding: 1.25rem 2rem 1.5rem;
+  padding: 1rem 2rem 1.25rem;
 }
 
 .stApp {
@@ -210,11 +223,19 @@ def _build_css() -> str:
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-/* Welcome Banner */
+/* Welcome Banner Header */
 .welcome-banner {
-  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border-light);
+  gap: 1rem;
+}
+
+.welcome-banner__text {
+  flex: 1;
 }
 
 .welcome-banner__title {
@@ -228,6 +249,12 @@ def _build_css() -> str:
 .welcome-banner__subtitle {
   font-size: 0.95rem;
   color: var(--text-muted);
+}
+
+.welcome-banner__logo {
+  max-height: 56px;
+  width: auto;
+  object-fit: contain;
 }
 
 /* Stage & Keycard Container */
@@ -324,7 +351,7 @@ def _build_css() -> str:
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--teal-primary);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 div.stButton > button {
@@ -391,6 +418,13 @@ div.stButton > button[kind="primary"]:hover {
   .block-container {
     padding: 1rem;
   }
+  .welcome-banner {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+  }
+  .welcome-banner__logo {
+    max-height: 40px;
+  }
   .character-stage {
     min-height: 440px;
     margin-bottom: 1.5rem;
@@ -420,18 +454,17 @@ def main() -> None:
     )
     st.markdown(_build_css(), unsafe_allow_html=True)
 
-    db_path = bootstrap_database()
     scenario_id = get_scenario_id(st)
     session = ensure_session_state(st, scenario_id)
+    rag = _load_rag(_rag_cache_key())
 
-    with connect(db_path) as connection:
-        bundle = load_reservation_bundle(connection, session.scenario_id)
-        if bundle is None:
-            st.error(
-                f"Reserva {session.scenario_id} não encontrada. Verifique o link e tente novamente."
-            )
-            return
-        services = load_services(connection)
+    bundle = get_reservation(session.scenario_id)
+    if bundle is None:
+        st.error(
+            f"Reserva {session.scenario_id} não encontrada. Verifique o link e tente novamente."
+        )
+        return
+    services = load_services()
 
     if "active_category_id" not in st.session_state:
         st.session_state.active_category_id = ALL_CATEGORIES[0]["id"]
@@ -440,14 +473,24 @@ def main() -> None:
     room_id = html.escape(str(bundle["room_id"]))
     first_name = html.escape(str(bundle["guest"]).split(" ")[0])
 
-    # Welcome Header
+    logo_uri = _asset_data_uri("Logo.png")
+    logo_img_tag = (
+        f'<img class="welcome-banner__logo" src="{logo_uri}" alt="YARA Logo" />'
+        if logo_uri
+        else ""
+    )
+
+    # Welcome Header with Logo
     st.markdown(
         f"""
         <div class="welcome-banner">
-            <div class="welcome-banner__title">{_time_of_day_greeting()}, {first_name}! 👋</div>
-            <div class="welcome-banner__subtitle">
-                Sou a YARA, sua assistente virtual. Como posso tornar sua estadia ainda melhor hoje?
+            <div class="welcome-banner__text">
+                <div class="welcome-banner__title">{_time_of_day_greeting()}, {first_name}! 👋</div>
+                <div class="welcome-banner__subtitle">
+                    Sou a YARA, sua assistente virtual. Como posso tornar sua estadia ainda melhor hoje?
+                </div>
             </div>
+            {logo_img_tag}
         </div>
         """,
         unsafe_allow_html=True,
@@ -526,8 +569,6 @@ def main() -> None:
             ALL_CATEGORIES[0],
         )
 
-
-
         # Display category prompt chips directly for frictionless selection
         chip_cols = st.columns(len(selected_cat["prompts"]))
         for idx, (col, prompt_text) in enumerate(zip(chip_cols, selected_cat["prompts"])):
@@ -542,7 +583,7 @@ def main() -> None:
 
         # Scrollable Chat Container
         with st.container(height=CHAT_HEIGHT_PX, border=False, key="chat_panel"):
-            render_chat(st, bundle, services)
+            render_chat(st, rag, bundle, services)
 
 
 if __name__ == "__main__":
