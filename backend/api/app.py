@@ -271,6 +271,7 @@ def _build_css() -> str:
   --border-light: rgba(28, 42, 41, 0.08);
   --shadow-soft: 0 12px 32px rgba(14, 82, 86, 0.06);
   --motion-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
+  color-scheme: light;
 }
 
 /* Hide default Streamlit chrome */
@@ -291,6 +292,23 @@ def _build_css() -> str:
   background: var(--bg-main);
   color: var(--text-primary);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.stApp,
+.stApp p,
+.stApp span,
+.stApp li,
+.stApp label,
+.stApp div {
+  color: var(--text-primary);
+}
+
+[data-testid="stAppViewContainer"],
+[data-testid="stHeader"],
+[data-testid="stMain"],
+[data-testid="stVerticalBlock"],
+[data-testid="stBottomBlockContainer"] {
+  background: var(--bg-main) !important;
 }
 
 /* Welcome Banner Header */
@@ -335,6 +353,7 @@ def _build_css() -> str:
   align-items: center;
   justify-content: flex-end;
   min-height: 580px;
+  max-height: 680px;
   border-radius: 28px;
   border: 1px solid var(--border-light);
   background: linear-gradient(180deg, #ffffff 0%, #f3efe6 100%);
@@ -368,6 +387,7 @@ def _build_css() -> str:
   z-index: 2;
   width: 90%;
   max-width: 350px;
+  min-width: 260px;
   border-radius: 20px;
   border: 1px solid var(--border-light);
   background: var(--card-bg);
@@ -396,6 +416,7 @@ def _build_css() -> str:
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.75rem;
   padding: 0.45rem 0;
   border-bottom: 1px dashed var(--border-light);
   font-size: 0.85rem;
@@ -408,12 +429,14 @@ def _build_css() -> str:
 .hero-reservation__label {
   color: var(--text-muted);
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .hero-reservation__value {
   color: var(--text-primary);
   font-weight: 700;
   text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .hero-reservation__footer {
@@ -546,6 +569,7 @@ div.stButton > button[kind="primary"]:hover {
 
 [data-testid="stChatInput"] textarea {
   color: #ffffff !important;
+  caret-color: #ffffff !important;
 }
 
 [data-testid="stChatInput"] textarea::placeholder {
@@ -559,9 +583,16 @@ div.stButton > button[kind="primary"]:hover {
 
 [data-testid="stChatMessage"],
 [data-testid="stChatMessage"] p,
+[data-testid="stChatMessage"] li,
+[data-testid="stChatMessage"] strong,
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"],
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] p {
   color: var(--text-primary) !important;
+}
+
+.st-emotion-cache-janbn0,
+.st-emotion-cache-4oy321 {
+  background: transparent !important;
 }
 
 @media (max-width: 900px) {
