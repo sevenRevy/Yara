@@ -322,9 +322,18 @@ def _extract_markdown_from_pdf(pdf_path: Path) -> str:
         pass
 
     from docling.datamodel.base_models import InputFormat
-    from docling.document_converter import DocumentConverter
+    from docling.datamodel.pipeline_options import PdfPipelineOptions
+    from docling.document_converter import DocumentConverter, PdfFormatOption
 
-    converter = DocumentConverter(allowed_formats=[InputFormat.PDF])
+    pipeline_options = PdfPipelineOptions(
+        ocr_batch_size=64,
+        layout_batch_size=64,
+        table_batch_size=64,
+    )
+    converter = DocumentConverter(
+        allowed_formats=[InputFormat.PDF],
+        format_options={InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)},
+    )
     result = converter.convert(str(pdf_path))
     document = getattr(result, "document", None)
     if document is None:
