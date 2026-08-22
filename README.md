@@ -101,7 +101,7 @@ py -3 backend/scripts/build_rag_index.py
 npm run dev:all
 ```
 
-Esse comando sobe o frontend React/Vite e a demo Streamlit ao mesmo tempo. Se quiser apenas o frontend, use `npm run dev`.
+Esse comando sobe o frontend React/Vite e a demo Streamlit ao mesmo tempo. Se quiser apenas o frontend, use `npm run dev`. Se quiser apenas o Streamlit, use `npm run dev:streamlit`.
 
 ## Dados estruturados e PDFs
 

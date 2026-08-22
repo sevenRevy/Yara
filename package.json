@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:streamlit": "py -3 -m streamlit run backend/api/app.py --server.headless true",
     "dev:all": "node ./scripts/dev.mjs",
     "build": "vite build",
     "preview": "vite preview"

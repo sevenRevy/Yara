@@ -128,7 +128,7 @@ class HotelRAG:
         retrieved_context = self._compose_documents_block(hits)
 
         system_prompt = (
-            "Voce e a YARA, concierge de hotel. Responda em portugues claro e objetivo.\n"
+            "Voce e a YARA, assistente do hotel. Responda em portugues claro e objetivo.\n"
             "Use os fatos da reserva como fonte primaria para dados pessoais e da estadia.\n"
             "Use os trechos recuperados dos PDFs para politicas, horarios e conhecimento do hotel.\n"
             "Se a resposta nao estiver no contexto, diga isso explicitamente e nao invente."

@@ -15,7 +15,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from streamlit.runtime import get_instance
 
-from backend.api.chat import render_chat
+from backend.api.chat import render_chat, render_chat_input
 from backend.api.session import ensure_session_state, get_scenario_id
 from backend.data_processing.csv_loader import (
     get_reservation,
@@ -612,7 +612,11 @@ div.stButton > button[data-testid="baseButton-primary"]:hover * {
 
 [data-testid="stChatMessage"] {
   background: transparent !important;
-  padding: 0.5rem 0 !important;
+  display: flex !important;
+  width: 100% !important;
+  padding: 0.4rem 0 !important;
+  gap: 0.65rem !important;
+  align-items: flex-start !important;
 }
 
 [data-testid="stChatMessage"],
@@ -622,6 +626,60 @@ div.stButton > button[data-testid="baseButton-primary"]:hover * {
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"],
 [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] p {
   color: var(--text-primary) !important;
+}
+
+[data-testid="stChatMessage"] > div:first-child {
+  width: 40px !important;
+  min-width: 40px !important;
+  height: 40px !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(14, 82, 86, 0.12) !important;
+  background: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(28, 42, 41, 0.05) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+[data-testid="stChatMessageContent"] {
+  flex: 0 1 760px !important;
+  max-width: calc(100% - 56px) !important;
+}
+
+[data-testid="stChatMessageContent"] [data-testid="stMarkdownContainer"] {
+  display: inline-block !important;
+  width: auto !important;
+  max-width: 100% !important;
+  border-radius: 18px !important;
+  border: 1px solid var(--border-light) !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 22px rgba(28, 42, 41, 0.05) !important;
+  padding: 0.78rem 0.95rem !important;
+}
+
+[data-testid="stChatMessageContent"] [data-testid="stMarkdownContainer"] p {
+  margin: 0 !important;
+  line-height: 1.55 !important;
+}
+
+[data-testid="stChatMessageContent"] [data-testid="stMarkdownContainer"] ul {
+  margin: 0.55rem 0 0.55rem 1.15rem !important;
+}
+
+[data-testid="stChatMessageContent"] [data-testid="stMarkdownContainer"] li {
+  margin: 0.28rem 0 !important;
+}
+
+[data-testid="stChatMessage"]:has([aria-label="Chat message from user"]) [data-testid="stMarkdownContainer"] {
+  background: var(--teal-primary) !important;
+  border-color: var(--teal-primary) !important;
+  color: #ffffff !important;
+}
+
+[data-testid="stChatMessage"]:has([aria-label="Chat message from user"]) [data-testid="stMarkdownContainer"] p,
+[data-testid="stChatMessage"]:has([aria-label="Chat message from user"]) [data-testid="stMarkdownContainer"] strong {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 .st-emotion-cache-janbn0,
@@ -805,6 +863,7 @@ def main() -> None:
         # Scrollable Chat Container
         with st.container(height=CHAT_HEIGHT_PX, border=False, key="chat_panel"):
             render_chat(st, rag, bundle, services)
+        render_chat_input(st)
 
 
 if __name__ == "__main__":

@@ -43,10 +43,12 @@ def render_chat(
 
     if pending_prompt:
         _stream_turn(st_module, pending_prompt, rag, bundle, services)
-        return
 
+
+def render_chat_input(st_module) -> None:
     prompt = st_module.chat_input("Pergunte sobre sua estadia, serviços ou checkout...")
     if not prompt:
         return
 
-    _stream_turn(st_module, prompt, rag, bundle, services)
+    st_module.session_state.pending_prompt = prompt
+    st_module.rerun()
