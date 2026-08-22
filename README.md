@@ -20,80 +20,52 @@ YARA e um assistente virtual de hotel com apresentacao em React/Vite e demo func
 | Experiencia | Frontend de apresentacao com CTA para a demo |
 | Chat | Streamlit em `backend/api/app.py` |
 | Dados operacionais | CSVs em `data/csv` |
-| Base documental | PDFs em `data/raw`, Markdown em `data/processed` |
-| RAG | Chunks, embeddings e metadados em `data/index` |
+| Base documental | 10 PDFs em `data/raw`, Markdown em `data/processed` |
+| RAG | 77 chunks, embeddings e metadados em `data/index` |
 | IA | Embeddings e LLM via OpenRouter |
 
 ## Arquitetura do MVP
 
-```text
-React/Vite intro
-  ↓
-Streamlit chat
-  ↓
-CSV estruturado + PDFs do hotel
-  ↓
-OpenRouter embeddings + LLM
-```
-
 ```mermaid
 flowchart LR
-    Intro[React/Vite intro] --> CTA[Iniciar demo]
-    CTA --> Chat[Streamlit chat]
-    Chat --> Session[scenario=1001]
-    Session --> CSV[CSVs da reserva]
-    Session --> RAG[Indice RAG dos PDFs]
-    RAG --> Chunks[Markdown, chunks e embeddings]
-    CSV --> Prompt[Prompt final]
-    Chunks --> Prompt
-    Prompt --> LLM[OpenRouter LLM]
-    LLM --> Answer[Resposta da YARA]
+    %% Fluxo online: o usuario pergunta e a YARA combina dados estruturados + RAG.
+    U["Usuario"] --> FE["Intro React/Vite"]
+    FE --> APP["Demo Streamlit"]
+    APP --> Q["Pergunta do chat"]
+
+    Q --> CSV["Dados da reserva<br/>CSVs em data/csv"]
+    Q --> RAG["Busca documental<br/>indice em data/index"]
+
+    CSV --> CTX["Contexto da resposta"]
+    RAG --> CTX
+    CTX --> LLM["OpenRouter LLM"]
+    LLM --> OUT["Resposta da YARA<br/>no Streamlit"]
+
+    %% Fluxo offline: os documentos alimentam o indice usado pelo RAG.
+    PDF["PDFs do hotel<br/>data/raw"] --> PREP["Pipeline offline<br/>PDF -> Markdown -> chunks -> embeddings"]
+    PREP --> IDX[("Indice RAG<br/>data/index")]
+    IDX --> RAG
+
+    classDef app fill:#e8f4ff,stroke:#2878b5,stroke-width:1.5px
+    classDef data fill:#e8f8f1,stroke:#25865a,stroke-width:1.5px
+    classDef rag fill:#eee8ff,stroke:#6842a8,stroke-width:1.5px
+    classDef llm fill:#fff0e6,stroke:#c55a11,stroke-width:2px
+    classDef output fill:#e8f8f1,stroke:#25865a,stroke-width:2px
+
+    class FE,APP,Q app
+    class CSV data
+    class RAG,PDF,PREP,IDX rag
+    class CTX,LLM llm
+    class OUT output
 ```
 
-O circuito completo do MVP:
+A arquitetura do MVP separa a experiencia de entrada, os dados estruturados e a recuperacao documental. O frontend em React/Vite funciona como apresentacao e leva o usuario para a demo em Streamlit, onde a conversa acontece.
 
-```text
-Usuario
-  ↓
-Apresentacao da YARA
-  ↓
-Iniciar demo
-  ↓
-Streamlit
-  ↓
-scenario=1001
-  ↓
-CSV da reserva
-  ↓
-PDF -> Markdown -> chunks -> embeddings
-  ↓
-Top-K similaridade
-  ↓
-Prompt final
-  ↓
-OpenRouter LLM
-  ↓
-Chat da YARA
-```
+No fluxo online, cada pergunta consulta duas fontes antes de chamar o modelo: os CSVs em `data/csv`, que guardam os fatos da reserva e dos servicos, e o indice RAG em `data/index`, que guarda os trechos recuperaveis dos PDFs do hotel. Esses dois contextos sao reunidos em um prompt unico e enviados ao OpenRouter para gerar a resposta exibida no chat.
 
-## O que ja esta pronto
+O fluxo offline prepara a base documental usada pelo RAG. Os PDFs em `data/raw` sao convertidos para Markdown com Docling, quebrados em chunks, enriquecidos com metadados e transformados em embeddings. O resultado fica versionado em `data/index` para que a demo consulte esse indice durante a conversa.
 
-- Frontend de apresentacao em `src/components/Intro`
-- CTA final que abre a demo do Streamlit
-- CSVs estruturados em `data/csv`
-- Conversor CSV em `backend/data_processing/csv_loader.py`
-- Pipeline PDF -> Markdown em `backend/data_processing/hotel_rag.py`
-- Indexacao em `data/index/chunks.jsonl`, `data/index/embeddings.npy` e `data/index/index_meta.json`
-- Chat Streamlit com OpenRouter em `backend/api/app.py`
 
-<details>
-<summary>Foco atual</summary>
-
-- Manter o caminho completo frontend -> demo -> RAG funcionando localmente.
-- Validar respostas a partir do `scenario=1001`.
-- Evoluir a experiencia sem separar o frontend da base funcional do MVP.
-
-</details>
 
 ## Como rodar o projeto localmente
 
@@ -141,11 +113,18 @@ Esses dados entram diretamente no contexto da reserva e permitem responder pergu
 - O quarto tem frigobar?
 - Quais servicos estao cadastrados?
 
-Os PDFs em `data/raw` sao convertidos para Markdown, quebrados em chunks e indexados em `data/index`:
+Os PDFs em `data/raw` sao convertidos para Markdown em `data/processed`, quebrados em chunks e indexados em `data/index`. O indice atual foi gerado a partir de 10 documentos e contem 77 chunks:
 
-- `hotel_guide.pdf`
-- `policies.pdf`
-- `services.pdf`
+- `01_guia_geral_yara.pdf`
+- `02_politicas_hospedagem_yara.pdf`
+- `03_servicos_hotel_yara.pdf`
+- `04_cafe_da_manha_yara.pdf`
+- `05_piscina_lazer_yara.pdf`
+- `06_frigobar_yara.pdf`
+- `07_wifi_conectividade_yara.pdf`
+- `08_estacionamento_yara.pdf`
+- `09_restaurante_room_service_yara.pdf`
+- `10_limpeza_quarto_yara.pdf`
 
 ## Scripts uteis
 
@@ -153,20 +132,12 @@ Os PDFs em `data/raw` sao convertidos para Markdown, quebrados em chunks e index
 - `py -3 backend/scripts/build_rag_index.py`
 - `py -3 backend/scripts/test_rag.py`
 
-## Fluxo atual
+## Ativos e creditos
 
-```text
-CSV da reserva + PDFs do hotel
-  ↓
-Markdown + chunks
-  ↓
-Embeddings OpenRouter
-  ↓
-Similarity search
-  ↓
-Prompt final
-  ↓
-OpenRouter LLM
-  ↓
-Streamlit chat
-```
+Os arquivos de audio usados pela introducao e pela demo Streamlit ficam em `public/audio`:
+
+- `Bossa Nova Days.wav`
+- `CastlesMadeOutOfSand.wav`
+- `Shrimp SambaLOOPED.wav`
+
+Credito: faixas do pacote [SomeWhatGood: Beach](https://flowerheadmusic.itch.io/somewhat-good-beach), de flowerhead.
