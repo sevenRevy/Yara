@@ -1,9 +1,33 @@
 # YARA
 
-YARA e um assistente virtual de hotel. O repositório ja tem o frontend React/Vite e agora ganhou a primeira camada funcional do MVP:
+<p align="center">
+  <img src="artifacts/YARA.png" alt="YARA" width="220" />
+</p>
+
+<p align="center">
+  <a href="#visao-rapida">Visao rapida</a> |
+  <a href="#arquitetura-do-mvp">Arquitetura</a> |
+  <a href="#como-rodar-o-projeto-localmente">Como rodar</a> |
+  <a href="#dados-estruturados-e-pdfs">Dados</a>
+</p>
+
+YARA e um assistente virtual de hotel com apresentacao em React/Vite e demo funcional em Streamlit. O MVP combina dados estruturados de reservas com busca semantica sobre PDFs do hotel para responder perguntas contextualizadas.
+
+## Visao rapida
+
+| Area | Estado atual |
+| --- | --- |
+| Experiencia | Frontend de apresentacao com CTA para a demo |
+| Chat | Streamlit em `backend/api/app.py` |
+| Dados operacionais | CSVs em `data/csv` |
+| Base documental | PDFs em `data/raw`, Markdown em `data/processed` |
+| RAG | Chunks, embeddings e metadados em `data/index` |
+| IA | Embeddings e LLM via OpenRouter |
+
+## Arquitetura do MVP
 
 ```text
-React intro
+React/Vite intro
   ↓
 Streamlit chat
   ↓
@@ -12,7 +36,21 @@ CSV estruturado + PDFs do hotel
 OpenRouter embeddings + LLM
 ```
 
-O foco agora e o circuito completo do MVP:
+```mermaid
+flowchart LR
+    Intro[React/Vite intro] --> CTA[Iniciar demo]
+    CTA --> Chat[Streamlit chat]
+    Chat --> Session[scenario=1001]
+    Session --> CSV[CSVs da reserva]
+    Session --> RAG[Indice RAG dos PDFs]
+    RAG --> Chunks[Markdown, chunks e embeddings]
+    CSV --> Prompt[Prompt final]
+    Chunks --> Prompt
+    Prompt --> LLM[OpenRouter LLM]
+    LLM --> Answer[Resposta da YARA]
+```
+
+O circuito completo do MVP:
 
 ```text
 Usuario
@@ -48,37 +86,45 @@ Chat da YARA
 - Indexacao em `data/index/chunks.jsonl`, `data/index/embeddings.npy` e `data/index/index_meta.json`
 - Chat Streamlit com OpenRouter em `backend/api/app.py`
 
-## Como rodar a etapa atual
+<details>
+<summary>Foco atual</summary>
 
-1. Instale as dependencias de frontend:
+- Manter o caminho completo frontend -> demo -> RAG funcionando localmente.
+- Validar respostas a partir do `scenario=1001`.
+- Evoluir a experiencia sem separar o frontend da base funcional do MVP.
+
+</details>
+
+## Como rodar o projeto localmente
+
+1. Crie o arquivo `.env` a partir de `.env.example` e informe sua `OPENROUTER_API_KEY`.
+   Se quiser, ajuste também `VITE_STREAMLIT_URL` e `VITE_DEMO_SCENARIO_ID`.
+
+2. Instale as dependencias do frontend:
 
 ```bash
 npm install
 ```
 
-2. Instale a dependencia Python do demo:
+3. Instale as dependencias Python do demo:
 
 ```bash
 py -3 -m pip install -r requirements.txt
 ```
 
-3. Gere ou atualize o indice RAG:
+4. Gere ou atualize o indice RAG com os PDFs em `data/raw`:
 
 ```bash
 py -3 backend/scripts/build_rag_index.py
 ```
 
-4. Rode o frontend:
+5. Rode tudo com um comando na raiz do projeto:
 
 ```bash
-npm run dev
+npm run dev:all
 ```
 
-5. Rode a demo Streamlit:
-
-```bash
-streamlit run backend/api/app.py
-```
+Esse comando sobe o frontend React/Vite e a demo Streamlit ao mesmo tempo. Se quiser apenas o frontend, use `npm run dev`.
 
 ## Dados estruturados e PDFs
 
