@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { introSlides } from "../../data/introSlides";
 import { IntroCard } from "./IntroCard";
@@ -11,8 +11,17 @@ import "./intro.css";
 
 import background from "../../../artifacts/2_Background.png";
 
+const INTRO_AUDIO_TRACKS = [
+  "/audio/Bossa Nova Days.wav",
+  "/audio/CastlesMadeOutOfSand.wav",
+  "/audio/Shrimp SambaLOOPED.wav",
+];
+
 export function Intro() {
   const [slideIndex, setSlideIndex] = useState(0);
+  const [audioTrackIndex, setAudioTrackIndex] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioStartedRef = useRef(false);
 
   const slide = introSlides[slideIndex];
   const isLastSlide = slideIndex === introSlides.length - 1;
@@ -20,17 +29,42 @@ export function Intro() {
   const fallbackScenarioId = import.meta.env.VITE_DEMO_SCENARIO_ID ?? DEFAULT_DEMO_SCENARIO_ID;
   const demoScenarioId = slide.demoScenarioId ?? fallbackScenarioId;
 
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    if (!audio || !audioStartedRef.current) {
+      return;
+    }
+
+    void audio.play().catch(() => undefined);
+  }, [audioTrackIndex]);
+
+  const playIntroAudio = () => {
+    const audio = audioRef.current;
+
+    if (!audio) {
+      return;
+    }
+
+    audioStartedRef.current = true;
+    audio.volume = 0.28;
+    void audio.play().catch(() => undefined);
+  };
+
   const goNext = () => {
+    playIntroAudio();
     setSlideIndex((current) =>
       Math.min(current + 1, introSlides.length - 1),
     );
   };
 
   const skipIntro = () => {
+    playIntroAudio();
     setSlideIndex(introSlides.length - 1);
   };
 
   const startDemo = () => {
+    playIntroAudio();
     const targetUrl = new URL(streamlitUrl);
     targetUrl.searchParams.set("scenario", demoScenarioId);
     window.location.assign(targetUrl.toString());
@@ -38,6 +72,15 @@ export function Intro() {
 
   return (
     <main className="intro">
+      <audio
+        ref={audioRef}
+        src={INTRO_AUDIO_TRACKS[audioTrackIndex]}
+        preload="auto"
+        onEnded={() =>
+          setAudioTrackIndex((current) => (current + 1) % INTRO_AUDIO_TRACKS.length)
+        }
+      />
+
       <img className="intro__background" src={background} alt="" aria-hidden="true" />
 
       <div className="intro__stage">

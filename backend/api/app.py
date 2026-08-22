@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import html
+import json
 import sys
 from datetime import date, datetime
 from pathlib import Path
@@ -11,6 +12,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import streamlit as st
+import streamlit.components.v1 as components
+from streamlit.runtime import get_instance
 
 from backend.api.chat import render_chat
 from backend.api.session import ensure_session_state, get_scenario_id
@@ -21,7 +24,13 @@ from backend.data_processing.csv_loader import (
 from backend.data_processing.hotel_rag import load_hotel_rag
 
 ARTIFACTS = ROOT / "artifacts"
+AUDIO = ROOT / "public" / "audio"
 MONTHS_PT = ("jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez")
+AUDIO_TRACKS = (
+    "Bossa Nova Days.wav",
+    "CastlesMadeOutOfSand.wav",
+    "Shrimp SambaLOOPED.wav",
+)
 
 ALL_CATEGORIES = [
     {
@@ -126,6 +135,66 @@ def _asset_data_uri(filename: str) -> str:
     suffix = asset_path.suffix.lower().lstrip(".") or "png"
     encoded = base64.b64encode(asset_path.read_bytes()).decode("ascii")
     return f"data:image/{suffix};base64,{encoded}"
+
+
+def _audio_media_urls() -> list[str]:
+    media_file_mgr = get_instance().media_file_mgr
+    urls: list[str] = []
+
+    for index, filename in enumerate(AUDIO_TRACKS):
+        audio_path = AUDIO / filename
+        if audio_path.exists():
+            urls.append(
+                media_file_mgr.add(
+                    str(audio_path),
+                    "audio/wav",
+                    f"yara.audio.{index}",
+                    file_name=filename,
+                ),
+            )
+
+    return urls
+
+
+def _render_audio_player() -> None:
+    tracks = _audio_media_urls()
+
+    if not tracks:
+        return
+
+    components.html(
+        f"""
+        <audio id="yara-streamlit-audio" preload="auto"></audio>
+        <script>
+        (() => {{
+          const tracks = {json.dumps(tracks)};
+          const audio = document.getElementById("yara-streamlit-audio");
+          let trackIndex = 0;
+          let hasStarted = false;
+
+          audio.src = tracks[trackIndex];
+          audio.volume = 0.28;
+
+          const playAudio = () => {{
+            hasStarted = true;
+            audio.play().catch(() => undefined);
+          }};
+
+          const advanceTrack = () => {{
+            trackIndex = (trackIndex + 1) % tracks.length;
+            audio.src = tracks[trackIndex];
+            if (hasStarted) {{
+              audio.play().catch(() => undefined);
+            }}
+          }};
+
+          audio.addEventListener("ended", advanceTrack);
+          window.parent.document.addEventListener("click", playAudio, {{ once: true }});
+        }})();
+        </script>
+        """,
+        height=0,
+    )
 
 
 def _bundle_value(bundle, key: str, default=None):
@@ -521,6 +590,7 @@ def main() -> None:
         initial_sidebar_state="collapsed",
     )
     st.markdown(_build_css(), unsafe_allow_html=True)
+    _render_audio_player()
 
     scenario_id = get_scenario_id(st)
     session = ensure_session_state(st, scenario_id)
