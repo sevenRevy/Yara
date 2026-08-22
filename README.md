@@ -1,17 +1,25 @@
 # YARA
 
-<p align="center">
-  <img src="artifacts/YARA.png" alt="YARA" width="220" />
-</p>
+<table align="center">
+  <tr>
+    <td align="center" valign="middle">
+      <img src="artifacts/YARA.png" alt="YARA" width="220" />
+    </td>
+    <td align="center" valign="middle">
+      <img src="artifacts/ONE_logo_rgb.webp" alt="Oracle Next Education" width="140" />
+    </td>
+  </tr>
+</table>
 
 <p align="center">
   <a href="#visao-rapida">Visao rapida</a> |
+  <a href="#showcase">Showcase</a> |
   <a href="#arquitetura-do-mvp">Arquitetura</a> |
   <a href="#como-rodar-o-projeto-localmente">Como rodar</a> |
   <a href="#dados-estruturados-e-pdfs">Dados</a>
 </p>
 
-YARA e um assistente virtual de hotel com apresentacao em React/Vite e demo funcional em Streamlit. O MVP combina dados estruturados de reservas com busca semantica sobre PDFs do hotel para responder perguntas contextualizadas.
+YARA e um assistente virtual de hotel com apresentacao em React/Vite e demo funcional em Streamlit. O MVP combina dados estruturados de reservas com busca semantica sobre PDFs do hotel para responder perguntas contextualizadas. O repositorio foi desenvolvido com apoio do Codex para acelerar a implementacao, a documentacao e a validacao do fluxo.
 
 ## Visao rapida
 
@@ -28,6 +36,23 @@ YARA e um assistente virtual de hotel com apresentacao em React/Vite e demo func
 
 - Frontend: https://yara.joham.workers.dev/
 - Demo Streamlit: https://yara-hotel-assistant.streamlit.app
+
+## Showcase
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="artifacts/showcase-intro.png" alt="Tela inicial da intro React/Vite da YARA" width="100%" />
+    </td>
+    <td width="50%">
+      <img src="artifacts/showcase-streamlit-chart.png" alt="Cartao de reserva exibido na demo Streamlit da YARA" width="100%" />
+    </td>
+  </tr>
+  <tr>
+    <td>Intro publicada em React/Vite</td>
+    <td>Demo Streamlit</td>
+  </tr>
+</table>
 
 ## Arquitetura do MVP
 
