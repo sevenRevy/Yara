@@ -414,6 +414,16 @@ def _source_fingerprint(raw_dir: Path) -> list[dict[str, Any]]:
     return sources
 
 
+def _source_identity(sources: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        {
+            "path": source.get("path"),
+            "size": source.get("size"),
+        }
+        for source in sources
+    ]
+
+
 def _index_files_exist(index_dir: Path) -> bool:
     return (
         (index_dir / "chunks.jsonl").exists()
@@ -439,15 +449,8 @@ def _needs_rebuild(raw_dir: Path, processed_dir: Path, index_dir: Path) -> bool:
 
     recorded_sources = meta.get("sources") or []
     current_sources = _source_fingerprint(raw_dir)
-    if recorded_sources != current_sources:
+    if _source_identity(recorded_sources) != _source_identity(current_sources):
         return True
-
-    for markdown_path in _load_markdown_files(processed_dir):
-        pdf_path = raw_dir / f"{markdown_path.stem}.pdf"
-        if not pdf_path.exists():
-            continue
-        if markdown_path.stat().st_mtime < pdf_path.stat().st_mtime:
-            return True
 
     return False
 

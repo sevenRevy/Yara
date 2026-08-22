@@ -134,7 +134,7 @@ Os PDFs em `data/raw` sao convertidos para Markdown em `data/processed`, quebrad
 
 ## Ativos e creditos
 
-Os arquivos de audio usados pela introducao e pela demo Streamlit ficam em `public/audio`:
+Os arquivos de audio usados pela intro e pela demo Streamlit ficam em `public/audio`:
 
 - `Bossa Nova Days.wav`
 - `CastlesMadeOutOfSand.wav`
