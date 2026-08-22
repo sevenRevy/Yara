@@ -296,10 +296,8 @@ def _build_css() -> str:
 
 .stApp,
 .stApp p,
-.stApp span,
 .stApp li,
-.stApp label,
-.stApp div {
+.stApp label {
   color: var(--text-primary);
 }
 
@@ -475,12 +473,22 @@ div.stButton > button {
   will-change: transform, box-shadow;
 }
 
+div.stButton > button * {
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+
 div.stButton > button:hover {
   border-color: var(--teal-primary) !important;
   color: var(--teal-primary) !important;
   background: var(--teal-light) !important;
   transform: translateY(-2px);
   box-shadow: 0 8px 18px rgba(14, 82, 86, 0.1) !important;
+}
+
+div.stButton > button:hover * {
+  color: var(--teal-primary) !important;
+  -webkit-text-fill-color: var(--teal-primary) !important;
 }
 
 div.stButton > button:active {
@@ -493,17 +501,33 @@ div.stButton > button:focus-visible {
   outline-offset: 2px !important;
 }
 
-div.stButton > button[kind="primary"] {
+div.stButton > button[kind="primary"],
+div.stButton > button[data-testid="baseButton-primary"] {
   background: var(--teal-primary) !important;
   border-color: var(--teal-primary) !important;
   color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   box-shadow: 0 4px 12px rgba(14, 82, 86, 0.2) !important;
 }
 
-div.stButton > button[kind="primary"]:hover {
+div.stButton > button[kind="primary"] *,
+div.stButton > button[data-testid="baseButton-primary"] * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+div.stButton > button[kind="primary"]:hover,
+div.stButton > button[data-testid="baseButton-primary"]:hover {
   background: var(--teal-hover) !important;
   color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   box-shadow: 0 10px 22px rgba(14, 82, 86, 0.2) !important;
+}
+
+div.stButton > button[kind="primary"]:hover *,
+div.stButton > button[data-testid="baseButton-primary"]:hover * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 /* Prompt Chips Section */
@@ -568,12 +592,22 @@ div.stButton > button[kind="primary"]:hover {
 }
 
 [data-testid="stChatInput"] textarea {
-  color: #ffffff !important;
-  caret-color: #ffffff !important;
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  caret-color: var(--text-primary) !important;
+  text-decoration-color: currentColor !important;
+}
+
+[data-testid="stChatInput"] [contenteditable="true"],
+[data-testid="stChatInput"] [contenteditable="true"] * {
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  caret-color: var(--text-primary) !important;
+  text-decoration-color: currentColor !important;
 }
 
 [data-testid="stChatInput"] textarea::placeholder {
-  color: rgba(255, 255, 255, 0.68) !important;
+  color: var(--text-muted) !important;
 }
 
 [data-testid="stChatMessage"] {
