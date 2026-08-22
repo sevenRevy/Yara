@@ -24,6 +24,11 @@ YARA e um assistente virtual de hotel com apresentacao em React/Vite e demo func
 | RAG | 77 chunks, embeddings e metadados em `data/index` |
 | IA | Embeddings e LLM via OpenRouter |
 
+## Links publicados
+
+- Frontend: https://yara.joham.workers.dev/
+- Demo Streamlit: https://yara-hotel-assistant.streamlit.app
+
 ## Arquitetura do MVP
 
 ```mermaid
