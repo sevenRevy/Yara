@@ -584,7 +584,7 @@ def _select_category(cat_id: str) -> None:
 
 def main() -> None:
     st.set_page_config(
-        page_title="YARA - Concierge Assistant",
+        page_title="YARA - Hotel Assistant",
         page_icon="🌴",
         layout="wide",
         initial_sidebar_state="collapsed",
@@ -656,7 +656,7 @@ def main() -> None:
             f"""
             <div class="character-stage">
                 <img class="character-stage__background" src="{scene_uri}" alt="" aria-hidden="true" />
-                <img class="character-stage__image" src="{character_uri}" alt="YARA Concierge" />
+                <img class="character-stage__image" src="{character_uri}" alt="YARA Hotel Assistant" />
                 <div class="{chart_card_class}" aria-label="Detalhes da Reserva">
                     <div class="hero-reservation__rows">
                         <div class="hero-reservation__row">
