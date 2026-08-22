@@ -32,6 +32,7 @@ YARA e um assistente virtual de hotel com apresentacao em React/Vite e demo func
 ## Arquitetura do MVP
 
 ```mermaid
+%%{init: {"theme": "base", "themeVariables": {"background": "transparent", "mainBkg": "#0f172a", "primaryTextColor": "#f8fafc", "lineColor": "#94a3b8", "fontFamily": "Inter, ui-sans-serif, system-ui, sans-serif"}}}%%
 flowchart LR
     %% Fluxo online: o usuario pergunta e a YARA combina dados estruturados + RAG.
     U["Usuario"] --> FE["Intro React/Vite"]
@@ -51,11 +52,11 @@ flowchart LR
     PREP --> IDX[("Indice RAG<br/>data/index")]
     IDX --> RAG
 
-    classDef app fill:#e8f4ff,stroke:#2878b5,stroke-width:1.5px
-    classDef data fill:#e8f8f1,stroke:#25865a,stroke-width:1.5px
-    classDef rag fill:#eee8ff,stroke:#6842a8,stroke-width:1.5px
-    classDef llm fill:#fff0e6,stroke:#c55a11,stroke-width:2px
-    classDef output fill:#e8f8f1,stroke:#25865a,stroke-width:2px
+    classDef app fill:#123047,stroke:#60a5fa,stroke-width:1.5px,color:#f8fafc
+    classDef data fill:#12382b,stroke:#34d399,stroke-width:1.5px,color:#f8fafc
+    classDef rag fill:#2f2454,stroke:#a78bfa,stroke-width:1.5px,color:#f8fafc
+    classDef llm fill:#4a2613,stroke:#fb923c,stroke-width:2px,color:#f8fafc
+    classDef output fill:#12382b,stroke:#34d399,stroke-width:2px,color:#f8fafc
 
     class FE,APP,Q app
     class CSV data
