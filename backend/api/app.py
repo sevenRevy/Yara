@@ -544,9 +544,24 @@ div.stButton > button[kind="primary"]:hover {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03) !important;
 }
 
+[data-testid="stChatInput"] textarea {
+  color: #ffffff !important;
+}
+
+[data-testid="stChatInput"] textarea::placeholder {
+  color: rgba(255, 255, 255, 0.68) !important;
+}
+
 [data-testid="stChatMessage"] {
   background: transparent !important;
   padding: 0.5rem 0 !important;
+}
+
+[data-testid="stChatMessage"],
+[data-testid="stChatMessage"] p,
+[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"],
+[data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] p {
+  color: var(--text-primary) !important;
 }
 
 @media (max-width: 900px) {
