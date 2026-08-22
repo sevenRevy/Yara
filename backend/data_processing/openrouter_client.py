@@ -6,7 +6,7 @@ import urllib.error
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, Sequence
+from typing import Any, Iterable, Iterator, Sequence
 
 API_BASE = "https://openrouter.ai/api/v1"
 DEFAULT_EMBEDDING_MODEL = "openai/text-embedding-3-small"
@@ -87,6 +87,41 @@ def _request_json(method: str, path: str, payload: dict[str, Any] | None = None)
         raise OpenRouterError(exc.code, payload) from exc
 
 
+def _stream_jsonl(path: str, payload: dict[str, Any]) -> Iterator[dict[str, Any]]:
+    url = f"{API_BASE}{path}"
+    headers = {
+        "Authorization": f"Bearer {get_openrouter_api_key()}",
+        "Content-Type": "application/json",
+    }
+    request = urllib.request.Request(
+        url=url,
+        method="POST",
+        headers=headers,
+        data=json.dumps(payload).encode("utf-8"),
+    )
+
+    try:
+        with urllib.request.urlopen(request, timeout=120) as response:
+            for raw_line in response:
+                line = raw_line.decode("utf-8", errors="replace").strip()
+                if not line or not line.startswith("data:"):
+                    continue
+                data = line.removeprefix("data:").strip()
+                if data == "[DONE]":
+                    break
+                try:
+                    yield json.loads(data)
+                except json.JSONDecodeError:
+                    continue
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        try:
+            error_payload = json.loads(body) if body else None
+        except json.JSONDecodeError:
+            error_payload = {"error": {"message": body or exc.reason}}
+        raise OpenRouterError(exc.code, error_payload) from exc
+
+
 def _batched(values: Sequence[str], batch_size: int) -> Iterable[list[str]]:
     for start in range(0, len(values), batch_size):
         yield list(values[start : start + batch_size])
@@ -156,6 +191,46 @@ def chat_completion(
             if not content:
                 raise RuntimeError(f"OpenRouter returned an empty chat message for {selected_model}.")
             return str(content)
+        except (OpenRouterError, RuntimeError) as exc:
+            errors.append(exc)
+
+    if errors:
+        raise errors[-1]
+    raise RuntimeError("No OpenRouter chat models configured.")
+
+
+def chat_completion_stream(
+    messages: Sequence[dict[str, Any]],
+    *,
+    model: str = DEFAULT_LLM_MODEL,
+    fallback_models: Sequence[str] = DEFAULT_LLM_FALLBACK_MODELS,
+    temperature: float = 0.2,
+    max_tokens: int = 700,
+) -> Iterator[str]:
+    errors: list[BaseException] = []
+    models = [model, *fallback_models]
+    for selected_model in dict.fromkeys(models):
+        payload = {
+            "model": selected_model,
+            "messages": list(messages),
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "stream": True,
+        }
+        try:
+            had_content = False
+            for event in _stream_jsonl("/chat/completions", payload):
+                choices = event.get("choices") or []
+                if not choices:
+                    continue
+                delta = choices[0].get("delta") or {}
+                content = delta.get("content")
+                if content:
+                    had_content = True
+                    yield str(content)
+            if had_content:
+                return
+            raise RuntimeError(f"OpenRouter streamed no content for {selected_model}.")
         except (OpenRouterError, RuntimeError) as exc:
             errors.append(exc)
 

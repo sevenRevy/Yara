@@ -6,7 +6,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Iterator
 
 import numpy as np
 
@@ -15,6 +15,7 @@ from backend.data_processing.openrouter_client import (
     DEFAULT_LLM_MODEL,
     OpenRouterError,
     chat_completion,
+    chat_completion_stream,
     embed_texts,
     get_env,
 )
@@ -203,17 +204,34 @@ class HotelRAG:
         )
 
     def answer(self, question: str, bundle: dict[str, Any], services: list[dict[str, Any]]) -> str:
-        hits = self.retrieve(question)
-
         api_key = get_env("OPENROUTER_API_KEY")
         if not api_key:
-            return self._local_fallback(question, bundle, services, hits)
+            return self._local_fallback(question, bundle, services, [])
 
+        hits = self.retrieve(question)
         messages = self._build_messages(question, bundle, services, hits)
         try:
             return chat_completion(messages, model=self.llm_model)
         except (RuntimeError, OpenRouterError):
             return self._local_fallback(question, bundle, services, hits)
+
+    def answer_stream(
+        self,
+        question: str,
+        bundle: dict[str, Any],
+        services: list[dict[str, Any]],
+    ) -> Iterator[str]:
+        api_key = get_env("OPENROUTER_API_KEY")
+        if not api_key:
+            yield self._local_fallback(question, bundle, services, [])
+            return
+
+        hits = self.retrieve(question)
+        messages = self._build_messages(question, bundle, services, hits)
+        try:
+            yield from chat_completion_stream(messages, model=self.llm_model)
+        except (RuntimeError, OpenRouterError):
+            yield self._local_fallback(question, bundle, services, hits)
 
 
 def _split_words(text: str, max_words: int, overlap_words: int) -> Iterable[str]:
