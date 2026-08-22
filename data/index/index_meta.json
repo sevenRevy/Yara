@@ -1,6 +1,6 @@
 {
   "embedding_model": "openai/text-embedding-3-small",
-  "llm_model": "openai/gpt-4o-mini",
+  "llm_model": "google/gemma-4-31b-it:free",
   "documents": 10,
   "chunks": 77,
   "dimensions": 1536,

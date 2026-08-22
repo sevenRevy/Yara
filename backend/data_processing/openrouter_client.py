@@ -10,7 +10,14 @@ from typing import Any, Iterable, Sequence
 
 API_BASE = "https://openrouter.ai/api/v1"
 DEFAULT_EMBEDDING_MODEL = "openai/text-embedding-3-small"
-DEFAULT_LLM_MODEL = "openai/gpt-4o-mini"
+DEFAULT_LLM_MODEL = "google/gemma-4-31b-it:free"
+DEFAULT_LLM_FALLBACK_MODELS = (
+    "google/gemma-4-26b-a4b-it:free",
+    "z-ai/glm-5.2:free",
+    "cohere/north-mini-code:free",
+    "nvidia/nemotron-3.5-lightning:free",
+    "openrouter/free",
+)
 ENV_PATH = Path(__file__).resolve().parents[2] / ".env"
 
 _DOTENV_LOADED = False
@@ -126,21 +133,32 @@ def chat_completion(
     messages: Sequence[dict[str, Any]],
     *,
     model: str = DEFAULT_LLM_MODEL,
+    fallback_models: Sequence[str] = DEFAULT_LLM_FALLBACK_MODELS,
     temperature: float = 0.2,
     max_tokens: int = 700,
 ) -> str:
-    payload = {
-        "model": model,
-        "messages": list(messages),
-        "temperature": temperature,
-        "max_tokens": max_tokens,
-    }
-    response = _request_json("POST", "/chat/completions", payload)
-    choices = response.get("choices") or []
-    if not choices:
-        raise RuntimeError("OpenRouter returned no choices.")
-    message = choices[0].get("message") or {}
-    content = message.get("content")
-    if not content:
-        raise RuntimeError("OpenRouter returned an empty chat message.")
-    return str(content)
+    errors: list[BaseException] = []
+    models = [model, *fallback_models]
+    for selected_model in dict.fromkeys(models):
+        payload = {
+            "model": selected_model,
+            "messages": list(messages),
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+        }
+        try:
+            response = _request_json("POST", "/chat/completions", payload)
+            choices = response.get("choices") or []
+            if not choices:
+                raise RuntimeError(f"OpenRouter returned no choices for {selected_model}.")
+            message = choices[0].get("message") or {}
+            content = message.get("content")
+            if not content:
+                raise RuntimeError(f"OpenRouter returned an empty chat message for {selected_model}.")
+            return str(content)
+        except (OpenRouterError, RuntimeError) as exc:
+            errors.append(exc)
+
+    if errors:
+        raise errors[-1]
+    raise RuntimeError("No OpenRouter chat models configured.")
