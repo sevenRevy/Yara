@@ -1,25 +1,60 @@
 {
   "embedding_model": "openai/text-embedding-3-small",
   "llm_model": "openai/gpt-4o-mini",
-  "documents": 3,
-  "chunks": 3,
+  "documents": 10,
+  "chunks": 77,
   "dimensions": 1536,
-  "built_at": "2026-08-18T16:54:23.544979+00:00",
+  "built_at": "2026-08-22T07:18:01.992948+00:00",
   "sources": [
     {
-      "path": "data/raw/hotel_guide.pdf",
-      "mtime": 1787072029.4263098,
-      "size": 756
+      "path": "data/raw/01_guia_geral_yara.pdf",
+      "mtime": 1787400282.0,
+      "size": 493535
     },
     {
-      "path": "data/raw/policies.pdf",
-      "mtime": 1787072029.4273074,
-      "size": 747
+      "path": "data/raw/02_politicas_hospedagem_yara.pdf",
+      "mtime": 1787400282.0,
+      "size": 493875
     },
     {
-      "path": "data/raw/services.pdf",
-      "mtime": 1787072029.428307,
-      "size": 781
+      "path": "data/raw/03_servicos_hotel_yara.pdf",
+      "mtime": 1787400282.0,
+      "size": 493082
+    },
+    {
+      "path": "data/raw/04_cafe_da_manha_yara.pdf",
+      "mtime": 1787400282.0,
+      "size": 493735
+    },
+    {
+      "path": "data/raw/05_piscina_lazer_yara.pdf",
+      "mtime": 1787400284.0,
+      "size": 493449
+    },
+    {
+      "path": "data/raw/06_frigobar_yara.pdf",
+      "mtime": 1787400284.0,
+      "size": 493420
+    },
+    {
+      "path": "data/raw/07_wifi_conectividade_yara.pdf",
+      "mtime": 1787400284.0,
+      "size": 493434
+    },
+    {
+      "path": "data/raw/08_estacionamento_yara.pdf",
+      "mtime": 1787400284.0,
+      "size": 493285
+    },
+    {
+      "path": "data/raw/09_restaurante_room_service_yara.pdf",
+      "mtime": 1787400284.0,
+      "size": 493236
+    },
+    {
+      "path": "data/raw/10_limpeza_quarto_yara.pdf",
+      "mtime": 1787400284.0,
+      "size": 493202
     }
   ]
 }
