@@ -201,6 +201,7 @@ def _build_css() -> str:
   --card-bg: rgba(255, 255, 255, 0.92);
   --border-light: rgba(28, 42, 41, 0.08);
   --shadow-soft: 0 12px 32px rgba(14, 82, 86, 0.06);
+  --motion-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* Hide default Streamlit chrome */
@@ -304,6 +305,18 @@ def _build_css() -> str:
   backdrop-filter: blur(16px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   overflow: hidden;
+  transform-origin: center bottom;
+  animation: chart-settle 520ms var(--motion-smooth) both;
+  transition: transform 240ms var(--motion-smooth), box-shadow 240ms var(--motion-smooth);
+}
+
+.hero-reservation:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(14, 82, 86, 0.1);
+}
+
+.hero-reservation--feedback {
+  animation: chart-feedback 620ms var(--motion-smooth) both;
 }
 
 .hero-reservation__rows {
@@ -360,15 +373,32 @@ div.stButton > button {
   background: #ffffff !important;
   color: var(--text-primary) !important;
   font-weight: 600 !important;
-  transition: all 0.2s ease !important;
+  transition:
+    transform 180ms var(--motion-smooth),
+    border-color 180ms var(--motion-smooth),
+    background-color 180ms var(--motion-smooth),
+    box-shadow 180ms var(--motion-smooth),
+    color 180ms var(--motion-smooth) !important;
   box-shadow: 0 2px 6px rgba(0,0,0,0.02) !important;
+  will-change: transform, box-shadow;
 }
 
 div.stButton > button:hover {
   border-color: var(--teal-primary) !important;
   color: var(--teal-primary) !important;
   background: var(--teal-light) !important;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(14, 82, 86, 0.1) !important;
+}
+
+div.stButton > button:active {
+  transform: translateY(0) scale(0.985);
+  box-shadow: 0 3px 8px rgba(14, 82, 86, 0.08) !important;
+}
+
+div.stButton > button:focus-visible {
+  outline: 3px solid rgba(14, 82, 86, 0.18) !important;
+  outline-offset: 2px !important;
 }
 
 div.stButton > button[kind="primary"] {
@@ -381,6 +411,7 @@ div.stButton > button[kind="primary"] {
 div.stButton > button[kind="primary"]:hover {
   background: var(--teal-hover) !important;
   color: #ffffff !important;
+  box-shadow: 0 10px 22px rgba(14, 82, 86, 0.2) !important;
 }
 
 /* Prompt Chips Section */
@@ -400,6 +431,41 @@ div.stButton > button[kind="primary"]:hover {
   display: flex;
   align-items: center;
   gap: 0.35rem;
+}
+
+@keyframes chart-settle {
+  from {
+    opacity: 0.9;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes chart-feedback {
+  0% {
+    transform: translateY(6px) scale(0.99);
+    box-shadow: 0 6px 18px rgba(14, 82, 86, 0.06);
+  }
+  52% {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 14px 34px rgba(14, 82, 86, 0.12);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-reservation,
+  .hero-reservation--feedback,
+  div.stButton > button {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 /* Chat Component Tweaks */
@@ -439,10 +505,12 @@ div.stButton > button[kind="primary"]:hover {
 
 def _queue_prompt(prompt: str) -> None:
     st.session_state.pending_prompt = prompt
+    st.session_state.chart_feedback = True
 
 
 def _select_category(cat_id: str) -> None:
     st.session_state.active_category_id = cat_id
+    st.session_state.chart_feedback = True
 
 
 def main() -> None:
@@ -468,6 +536,9 @@ def main() -> None:
 
     if "active_category_id" not in st.session_state:
         st.session_state.active_category_id = ALL_CATEGORIES[0]["id"]
+    chart_card_class = "hero-reservation"
+    if st.session_state.pop("chart_feedback", False):
+        chart_card_class += " hero-reservation--feedback"
 
     guest_name = html.escape(str(bundle["guest"]))
     room_id = html.escape(str(bundle["room_id"]))
@@ -516,7 +587,7 @@ def main() -> None:
             <div class="character-stage">
                 <img class="character-stage__background" src="{scene_uri}" alt="" aria-hidden="true" />
                 <img class="character-stage__image" src="{character_uri}" alt="YARA Concierge" />
-                <div class="hero-reservation" aria-label="Detalhes da Reserva">
+                <div class="{chart_card_class}" aria-label="Detalhes da Reserva">
                     <div class="hero-reservation__rows">
                         <div class="hero-reservation__row">
                             <span class="hero-reservation__label">Hóspede</span>
