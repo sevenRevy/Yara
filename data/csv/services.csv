@@ -2,3 +2,10 @@ service_id,name,description,included
 1,Cafe da manha,Buffet servido no restaurante principal,true
 2,Piscina,Area externa com espreguicadeiras,true
 3,Frigobar,Bebidas e snacks no quarto,true
+4,Wi-Fi,Internet sem fio nas areas comuns e apartamentos,true
+5,Estacionamento,Vagas sujeitas a disponibilidade,false
+6,Room service,Pedidos de alimentos e bebidas no quarto,false
+7,Limpeza extra,Servico adicional de arrumacao mediante solicitacao,false
+8,Lavanderia,Coleta de roupas com entrega no dia seguinte,false
+9,Academia,Acesso a equipamentos de treino no segundo andar,true
+10,Bagageiro,Guarda de malas antes do check-in ou apos o check-out,true

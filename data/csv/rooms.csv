@@ -2,3 +2,10 @@ room_id,type,floor,minibar,breakfast,capacity
 304,Deluxe,3,true,true,2
 112,Standard,1,false,false,2
 408,Ocean,4,true,true,3
+205,Standard Plus,2,true,false,2
+306,Deluxe Familia,3,true,true,4
+501,Suite Master,5,true,true,2
+214,Acessivel,2,false,true,2
+409,Ocean Familia,4,true,true,4
+118,Economico,1,false,false,1
+602,Cobertura,6,true,true,4
