@@ -18,12 +18,10 @@
   <img alt="Python" src="https://img.shields.io/badge/Python-backend-3776AB?style=for-the-badge&logo=python&logoColor=white" />
   <img alt="OpenRouter" src="https://img.shields.io/badge/OpenRouter-IA-111827?style=for-the-badge" />
   <img alt="Docling" src="https://img.shields.io/badge/Docling-PDF_RAG-0F766E?style=for-the-badge" />
-  <img alt="NumPy" src="https://img.shields.io/badge/NumPy-embeddings-013243?style=for-the-badge&logo=numpy&logoColor=white" />
+
 </p>
 
-<p align="center">
-  <img alt="Status" src="https://img.shields.io/badge/Projeto-funcional_em_producao-16A34A?style=for-the-badge" />
-</p>
+
 
 <p align="center">
   <a href="#objetivo-do-projeto">Objetivo</a> |
